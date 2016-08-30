@@ -1,1 +1,82 @@
-function injectOnlineSub(){chrome.windows.getAll({populate:!0},function(n){n.forEach(function(n){n.tabs.forEach(function(n){"chrome"!==n.url.slice(0,6)&&chrome.tabs.executeScript(n.id,{file:"onlineSubcontent.js"})})})})}function changeGlobalSettings(n,e){chrome.windows.getAll({populate:!0},function(o){o.forEach(function(o){o.tabs.forEach(function(o){o.id!=e&&chrome.tabs.sendMessage(o.id,{changeGlobalSettings:n})})})})}function onlineSubOffOn(n){chrome.windows.getAll({populate:!0},function(e){e.forEach(function(e){e.tabs.forEach(function(e){chrome.tabs.sendMessage(e.id,{onlineSub:n})})})})}function extractDomain(n){var e;return e=n.indexOf("://")>-1?n.split("/")[2]:n.split("/")[0],e=e.split(":")[0]}function onlineSubOffOnDomen(n){var e;chrome.tabs.query({active:!0},function(n){e=extractDomain(n[0].url)}),chrome.tabs.query({},function(o){for(var i=0;i<o.length;i++)"chrome"!==o[i].url.slice(0,6)&&extractDomain(o[i].url)===e&&chrome.tabs.sendMessage(o[i].id,{onlineSub:n})})}chrome.storage.sync.get("onlineSub",function(n){void 0===n.onlineSub&&chrome.storage.sync.set({onlineSub:!0},function(){injectOnlineSub(),onlineSubOffOn("onlineSubOn")})}),chrome.runtime.onMessage.addListener(function(n,e,o){"onlineSubOff"===n.onlineSubOffOn?onlineSubOffOn("onlineSubOff"):"onlineSubOn"===n.onlineSubOffOn?onlineSubOffOn("onlineSubOn"):"onlineSubOn"===n.onlineSubOnOnDomen?onlineSubOffOnDomen("onlineSubOn"):"onlineSubOff"===n.onlineSubOffOnDomen?onlineSubOffOnDomen("onlineSubOff"):void 0!==n.changeGlobalSettings?changeGlobalSettings(n.changeGlobalSettings,e.tab.id):console.log("onlineSub backgroundscript message error")});
+chrome.storage.sync.get('onlineSub', function(val) {
+  if(val.onlineSub === undefined){
+    
+    chrome.storage.sync.set({'onlineSub': true}, function() {
+      injectOnlineSub();
+      onlineSubOffOn('onlineSubOn');
+
+    })
+  }
+});
+
+function injectOnlineSub(){
+  chrome.windows.getAll({populate:true},function(windows){
+    windows.forEach(function(window){
+      window.tabs.forEach(function(tab){
+        if(tab.url.slice(0,6) !== 'chrome')
+          chrome.tabs.executeScript(tab.id, {file: "onlineSubcontent.js"});
+      });
+    });
+  });
+}
+
+chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
+   if(message.onlineSubOffOn  === 'onlineSubOff'){
+     onlineSubOffOn('onlineSubOff')
+   }else if(message.onlineSubOffOn === 'onlineSubOn'){
+     onlineSubOffOn('onlineSubOn') 
+   }else if(message.onlineSubOnOnDomen === 'onlineSubOn'){
+     onlineSubOffOnDomen('onlineSubOn')
+   }else if(message.onlineSubOffOnDomen === 'onlineSubOff'){
+     onlineSubOffOnDomen('onlineSubOff')
+   }else if(message.changeGlobalSettings !== undefined){
+     changeGlobalSettings(message.changeGlobalSettings,sender.tab.id)
+   }else{
+     console.log('onlineSub backgroundscript message error')
+   }
+});
+
+function changeGlobalSettings(val,sender){
+  chrome.windows.getAll({populate:true},function(windows){
+    windows.forEach(function(window){
+      window.tabs.forEach(function(tab){
+        if(tab.id != sender)
+          chrome.tabs.sendMessage(tab.id, {'changeGlobalSettings': val });
+      });
+    });
+  });
+}
+
+function onlineSubOffOn(val){
+  chrome.windows.getAll({populate:true},function(windows){
+    windows.forEach(function(window){
+      window.tabs.forEach(function(tab){
+        chrome.tabs.sendMessage(tab.id, {'onlineSub': val });
+      });
+    });
+  });
+}
+function extractDomain(url) {
+    var domain;
+    if (url.indexOf("://") > -1) {
+        domain = url.split('/')[2];
+    }
+    else {
+        domain = url.split('/')[0];
+    }
+    domain = domain.split(':')[0];
+    return domain;
+}
+function onlineSubOffOnDomen(val){
+  var curTabUrl;
+  chrome.tabs.query({'active': true}, function (tabs) {
+   curTabUrl = extractDomain(tabs[0].url)
+  });
+  chrome.tabs.query({}, function (tabs) {
+   for(var i=0;i<tabs.length;i++){
+      if(tabs[i].url.slice(0,6) !== 'chrome' && extractDomain(tabs[i].url) === curTabUrl)
+        chrome.tabs.sendMessage(tabs[i].id, {'onlineSub': val });
+   }
+  });
+ 
+}
