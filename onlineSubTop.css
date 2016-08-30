@@ -1,0 +1,172 @@
+.onoffswitch{
+    position:relative;
+}
+.onoffswitch-checkbox {
+  display: none;
+  }
+.onoffswitch-checkbox + .onoffswitch-label{
+    position: absolute;
+    top: 0;
+    left: 15px;
+    cursor: pointer;
+    background-image: url('images/btn.png');
+    width: 106px;
+    height: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80px 30px;
+    margin: 21px 26px 0 0;
+}
+.onoffswitch-checkbox + .onoffswitch-label:before{
+ content:'OFF';
+     position: absolute;
+    top: 4px;
+    left: 44px;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label:before{
+  content:'ON';
+  position: absolute;
+    top: 4px;
+    left: 44px;
+
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label{
+    position: absolute;
+    top: 0;
+    left: -15px;
+    cursor: pointer;
+    background-image: url('images/btn.png');
+    width: 106px;
+    height: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80px 30px;
+    margin: 21px 26px 0 0;
+}
+
+.onoffswitch-bckg{
+    background-repeat: no-repeat;
+    margin: 21px 26px 0 0;
+    background-size: 106px;
+    background-image: url('images/btn_bckg.png');
+    width: 106px;
+    height: 30px;
+    background-position: center;
+
+}
+.onoffswitch-switch {
+    display: block;
+    margin: -0.5px;
+    background: #FFFFFF;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-radius: 20px;
+    background-repeat: no-repeat;
+    background-size: 106px;
+    background-image: url('images/btn.png');
+    width: 106px;
+    height: 30px;
+    background-position: center;
+    border: 1px solid black;
+}
+
+
+.container{
+    font-family: 'Oswald', sans-serif;
+    color: rgb(111,131,155);
+    font-size: 17px;
+    background-image: url('images/bckg.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 346px 320px;
+}
+.description{
+        width: 55%;
+    margin: 25px 0 0 14px;
+   
+}
+.title{
+      font-size: 18px;
+    margin: 27px 0px 0 15px;
+    width: 219px;
+    height: 45px;
+    background-repeat: no-repeat;
+    background-size: 219px;
+    background-image: url('images/line_bckg.png');
+
+
+}
+.title div{
+    position:relative;
+    font-size: 24px;
+    margin: 2px 0 0 28px;
+    z-index: 1;
+}
+.title div:after {
+  
+  content: 'Online Subtitles';
+    left: 0;
+    position: absolute;
+    text-shadow: 1.5px 1.1px 1.4px #000;
+    top: 0;
+    background: none;
+    z-index: -1;
+    letter-spacing: 1px;
+}
+.title div span{
+    background-image: -webkit-linear-gradient(left,rgb(255,255,255), rgb(194,206,226));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 600;
+    margin: 0.58px;
+}
+.row{
+    display: flex;
+    height: 70px;
+}
+.row:before{
+       width: 346px;
+    height: 3px;
+    content: " ";
+    background-image: url(images/line.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    position: absolute;
+    background-size: 346px;
+    background-color: white;
+}
+.logo{
+        margin: 13px 0 0 30px;
+    width: 82px;
+    height: 74px;
+    background-repeat: no-repeat;
+    background-size: 82px;
+    background-image: url('icon.png');
+
+}
+body{
+    margin:0;
+    padding:0;
+}
+.header{
+     display: flex;
+        height: 105px;
+}
+.arrow{
+    background-repeat: no-repeat;
+    background-size: 8px;
+    background-image: url('images/arrow.png');
+    width: 8px;
+    height: 15px;
+    background-position: center;
+    margin: 30px 0 0 30px;
+}
+.donate_img{
+        width: 106px;
+    height: 30px;
+    margin: 21px 26px 0 0;
+    position: absolute;
+    top: 0;
+    left: -30px;
+}
