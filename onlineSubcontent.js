@@ -54,6 +54,8 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
    {fontName:"Palatino Linotype",fontValue:"\"Palatino Linotype\", \"Book Antiqua\", Palatino, serif"},{fontName:"Times New Roman",fontValue:"\"Times New Roman\", Times, serif"},
    {fontName:"Courier New",fontValue:"\"Courier New\", Courier, monospace"},{fontName:"Lucida Console",fontValue:"\"Lucida Console\", Monaco, monospace"}];
  
+  var encodings = ['UTF-8','IBM866','ISO-8859-2','ISO-8859-3','ISO-8859-4','ISO-8859-5','ISO-8859-6','ISO-8859-7','ISO-8859-8','ISO-8859-8-I','ISO-8859-10','ISO-8859-13','ISO-8859-14','ISO-8859-15','ISO-8859-16','KOI8-R','KOI8-U','macintosh','windows-874','windows-1250','windows-1251','windows-1252','windows-1253','windows-1254','windows-1255','windows-1256','windows-1257','windows-1258','x-mac-cyrillic','GBK','gb18030','Big5','EUC-JP','ISO-2022-JP','Shift_JIS','EUC-KR','UTF-16BE','UTF-16LE'];
+
   var onlineSubDashboard = "<div class='onlineSubWrap'></div><div class='onlineSubDashboard'>"+
     "<input type='file' id='onlineSubLoadBtn"+onlineSubLoadBtnID+"' accept='.srt' class='onlineSubLoadBtn'>"+
     "<label class='onlineSubLoadLabel' for='onlineSubLoadBtn"+onlineSubLoadBtnID+"'><div></div></label><div class='onlineSubSettings' show='false'></div><br style='line-height: 30px;'>"+
@@ -65,6 +67,7 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
     "<span>Time corection (ms): </span><input class='onlineSubCorOutput' type='number' value='-1000'><br>"+
     "<span>Size: </span><input class='onlineSubFontSize' type='range' value='32' min='12' max='96' step='1'><br>"+
     "<span>Font family: </span><select class='onlineSubFontFamily'></select><br>"+
+    "<span>Encoding: </span><select class='onlineSubEncoding'></select><br>"+
     "<span>Save global: </span><input type='button' value='save' class='onlineSubSaveAsGlobal'>"+
   "</div>";
   video.insertAdjacentHTML('afterend', onlineSubDashboard);
@@ -80,11 +83,16 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
   var onlineSubStrokeColor = video.parentElement.getElementsByClassName('onlineSubStrokeColor')[0];
   var onlineSubFontSize = video.parentElement.getElementsByClassName('onlineSubFontSize')[0];
   var onlineSubFontFamily = video.parentElement.getElementsByClassName('onlineSubFontFamily')[0];
+  var onlineSubEncoding = video.parentElement.getElementsByClassName('onlineSubEncoding')[0];
   var onlineSubSettings = video.parentElement.getElementsByClassName('onlineSubSettings')[0];
   var onlineSubDashboard = video.parentElement.getElementsByClassName('onlineSubDashboard')[0];
   var onlineSubWrapLineOpacity = video.parentElement.getElementsByClassName('onlineSubWrapLineOpacity')[0];
   var onlineSubSaveAsGlobal = video.parentElement.getElementsByClassName('onlineSubSaveAsGlobal')[0];
   var onlineSubBold = video.parentElement.getElementsByClassName('onlineSubBold')[0];
+  
+  
+
+  setUpEncodings(onlineSubEncoding, encodings);
   setUpStyles(onlineSubDashboard, onlineSubFonts, onlineSubFontFamily, onlineSubWrap);
   setUpWrapPos(video, onlineSubWrap, onlineSubRange);
   getStylesFromStorage(onlineSubDashboard);
@@ -97,6 +105,7 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
   onlineSubStrokeColor.addEventListener('change', changeSubStrokeColor, false);
   onlineSubWrapLine.addEventListener('change', changeSubWrapLine, false);
   onlineSubFontFamily.addEventListener('change', changeSubFontFamily, false);
+  onlineSubEncoding.addEventListener('change', changeSubEncoding, false);
   video.addEventListener('playing',hideOnlineSubSettings,false);
   video.addEventListener('pause',showOnlineSubSettings,false);
   video.addEventListener('mousemove',showOnlineSubSettingsMM,false);
@@ -104,6 +113,10 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
   onlineSubDashboard.addEventListener('click',function(evt){evt.stopPropagation();},false);
   onlineSubSaveAsGlobal.addEventListener("click", saveStylesAsGlobal, false);
   onlineSubBold.addEventListener('change', changeSubWeight, false);
+}
+
+function changeSubEncoding(evt){
+	handleFileSelect(evt);
 }
 function changeSubWeight(evt){
   var onlineSubDashboard = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
@@ -189,6 +202,14 @@ function setUpStyles(onlineSubDashboard, onlineSubFonts, onlineSubFontFamily, on
   //   subLines[i].style.background = 'rgba(0,0,0,0.5)';
  //  }
 }
+
+function setUpEncodings(onlineSubEncoding, encodings){
+	for(var i = 0; i < encodings.length; i++) {
+		onlineSubEncoding.options[onlineSubEncoding.options.length] = new Option(encodings[i], encodings[i]);
+	}
+};
+
+
 var setUpWrapPosTimer = null;
 function setUpWrapPos(video, onlineSubWrap, onlineSubRange){
   var onlineSubFontSizeFirst = parseInt(onlineSubWrap.style.fontSize.slice(0, -2));
@@ -317,10 +338,10 @@ function changeSubStrokeColor(evt){
   onlineSubWrap.style.webkitTextStrokeColor = evt.target.value;
 }
 function handleFileSelect(evt) {
-  
-  var loadSubBtn = this;
-  var video = loadSubBtn.parentElement.parentElement.getElementsByTagName('video')[0];
-  var subWrap = loadSubBtn.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var loadSubBtn = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubDashboard')[0].getElementsByClassName('onlineSubLoadBtn')[0];
+  var video = evt.target.parentElement.parentElement.getElementsByTagName('video')[0];
+  var subWrap = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var selectedEncoding = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubDashboard')[0].getElementsByClassName('onlineSubEncoding')[0];
   if (loadSubBtn.files && loadSubBtn.files[0]) {
     var file = loadSubBtn.files[0];
 
@@ -338,7 +359,7 @@ function handleFileSelect(evt) {
           startVideoListner(video,subWrap,loadSubBtn,parsedSrt); //send to background
         };
       })(file);
-   reader.readAsText(file);
+   reader.readAsText(file, selectedEncoding.value);
   }
 };
 
@@ -494,4 +515,44 @@ function removeOnlineSub(){
   } 
 }
 
+
+function subtitleToTime(miliseconds, speedOrDelay) {
+    var coreOutput = document.getElementsByClassName('onlineSubCorOutput');
+    if (!coreOutput.length > 0) {
+        return;
+    }
+
+    var onlineSubCorOutput = parseInt(coreOutput[0].value);
+
+    if (speedOrDelay === 'speed') {
+        onlineSubCorOutput += miliseconds;
+        console.log('Speed subs by + ' + miliseconds + 'ms');
+    } else if (speedOrDelay === 'delay') {
+        onlineSubCorOutput -= miliseconds;
+        console.log("Delay subs by - " + miliseconds + 'ms');
+    }
+
+    coreOutput[0].value = onlineSubCorOutput;
+}
+
+// "G : -50ms delay \\n" +
+// "H : +50ms delay \\n" +
+function setupShortcuts() {
+    var miliseconds = 50;
+    window.addEventListener('keypress', function(e) {
+        var subs = document.getElementsByClassName('onlineSubWrap');
+        if(subs.length === 0){
+          return;
+        }
+
+        if (e.keyCode === 'g'.charCodeAt() || e.keyCode === 'G'.charCodeAt()) {
+            subtitleToTime(miliseconds, 'delay');
+        }
+        if (e.keyCode === 'h'.charCodeAt() || e.keyCode === 'H'.charCodeAt()) {
+            subtitleToTime(miliseconds, 'speed');
+        }
+    });
+}
+
+setupShortcuts();
 checkIfNotBannedGlobal();

@@ -93,5 +93,23 @@
   background-color:black;
 }
 
+.onlineSubCorOutput {
+  color:black;
+}
 
+.onlineSubSaveAsGlobal {
+  background-color: rgba(0,0,0,.7);
+  border: 1px solid white;
+  margin: 10px;
+}
+
+.onlineSubCorOutput {
+  color:black;
+}
+ 
+.onlineSubSaveAsGlobal {
+  background-color: rgba(0,0,0,.7);
+  border: 1px solid white;
+  margin: 10px;
+}
     
