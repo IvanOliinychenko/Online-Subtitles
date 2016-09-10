@@ -494,4 +494,38 @@ function removeOnlineSub(){
   } 
 }
 
+
+function subtitleToTime(miliseconds, speedOrDelay) {
+    if (!document.getElementsByClassName('onlineSubCorOutput').length > 0) {
+        return;
+    }
+
+    var onlineSubCorOutput = parseInt(document.getElementsByClassName('onlineSubCorOutput')[0].value);
+
+    if (speedOrDelay == 'speed') {
+        onlineSubCorOutput += miliseconds;
+        console.log('Speed subs by + ' + miliseconds + 'ms');
+    } else if (speedOrDelay == 'delay') {
+        onlineSubCorOutput -= miliseconds;
+        console.log("Delay subs by - " + miliseconds + 'ms');
+    }
+
+    document.getElementsByClassName('onlineSubCorOutput')[0].value = onlineSubCorOutput;
+}
+
+// "G : -50ms delay \\n" +
+// "H : +50ms delay \\n" +
+function setupShortcuts() {
+    var miliseconds = 50;
+    window.addEventListener('keypress', function(e) {
+        if (e.keyCode == 'g'.charCodeAt() || e.keyCode == 'G'.charCodeAt()) {
+            subtitleToTime(miliseconds, 'delay');
+        }
+        if (e.keyCode == 'h'.charCodeAt() || e.keyCode == 'H'.charCodeAt()) {
+            subtitleToTime(miliseconds, 'speed');
+        }
+    });
+}
+
+setupShortcuts();
 checkIfNotBannedGlobal();
