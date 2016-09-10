@@ -496,21 +496,22 @@ function removeOnlineSub(){
 
 
 function subtitleToTime(miliseconds, speedOrDelay) {
-    if (!document.getElementsByClassName('onlineSubCorOutput').length > 0) {
+    var coreOutput = document.getElementsByClassName('onlineSubCorOutput');
+    if (!coreOutput.length > 0) {
         return;
     }
 
-    var onlineSubCorOutput = parseInt(document.getElementsByClassName('onlineSubCorOutput')[0].value);
+    var onlineSubCorOutput = parseInt(coreOutput[0].value);
 
-    if (speedOrDelay == 'speed') {
+    if (speedOrDelay === 'speed') {
         onlineSubCorOutput += miliseconds;
         console.log('Speed subs by + ' + miliseconds + 'ms');
-    } else if (speedOrDelay == 'delay') {
+    } else if (speedOrDelay === 'delay') {
         onlineSubCorOutput -= miliseconds;
         console.log("Delay subs by - " + miliseconds + 'ms');
     }
 
-    document.getElementsByClassName('onlineSubCorOutput')[0].value = onlineSubCorOutput;
+    coreOutput[0].value = onlineSubCorOutput;
 }
 
 // "G : -50ms delay \\n" +
@@ -518,10 +519,15 @@ function subtitleToTime(miliseconds, speedOrDelay) {
 function setupShortcuts() {
     var miliseconds = 50;
     window.addEventListener('keypress', function(e) {
-        if (e.keyCode == 'g'.charCodeAt() || e.keyCode == 'G'.charCodeAt()) {
+        var subs = document.getElementsByClassName('onlineSubWrap');
+        if(subs.length === 0){
+          return;
+        }
+
+        if (e.keyCode === 'g'.charCodeAt() || e.keyCode === 'G'.charCodeAt()) {
             subtitleToTime(miliseconds, 'delay');
         }
-        if (e.keyCode == 'h'.charCodeAt() || e.keyCode == 'H'.charCodeAt()) {
+        if (e.keyCode === 'h'.charCodeAt() || e.keyCode === 'H'.charCodeAt()) {
             subtitleToTime(miliseconds, 'speed');
         }
     });
