@@ -26,6 +26,7 @@
             "http://*/*",
             "https://*/*"
             ],
+        "all_frames": true,
         "js": ["onlineSubcontent.js"],
         "css":["onlineSub.css"],
         "run_at": "document_end" 
