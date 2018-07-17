@@ -64,7 +64,7 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
     "<span>Stroke: </span><input class='onlineSubStrokeColor' type='color' value='#000000'><br>"+
     "<span>Background color: </span><input class='onlineSubWrapLine' type='color' value='#000000'><br>"+
     "<span>Background opacity: </span><input class='onlineSubWrapLineOpacity' type='range' min='1' max='100' step='1' value='0'><br>"+
-    "<span>Time corection (ms): </span><input class='onlineSubCorOutput' type='number' value='-1000'><br>"+
+    "<span>Time corection (ms): </span><input class='onlineSubCorOutput' type='number' step='500' value='-1000'><br>"+
     "<span>Size: </span><input class='onlineSubFontSize' type='range' value='32' min='12' max='96' step='1'><br>"+
     "<span>Font family: </span><select class='onlineSubFontFamily'></select><br>"+
     "<span>Encoding: </span><select class='onlineSubEncoding'></select><br>"+
@@ -535,10 +535,10 @@ function subtitleToTime(miliseconds, speedOrDelay) {
     coreOutput[0].value = onlineSubCorOutput;
 }
 
-// "G : -50ms delay \\n" +
-// "H : +50ms delay \\n" +
+// "G : -500ms delay \\n" +
+// "H : +500ms delay \\n" +
 function setupShortcuts() {
-    var miliseconds = 50;
+    var miliseconds = 500;
     window.addEventListener('keypress', function(e) {
         var subs = document.getElementsByClassName('onlineSubWrap');
         if(subs.length === 0){
