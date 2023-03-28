@@ -1,43 +1,47 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Online Subtitles",
   "short_name" : "OnlineSub",
   "description": "Watch your favorite movies and shows online with subtitles.",
   "version": "0.1.7",
   "author": "Ivan Oliinychenko",
-  "browser_action": {
-   "default_icon": "icon.png",
-   "default_popup": "onlineSub.html"
+  "action": {
+    "default_icon": "icon.png",
+    "default_popup": "onlineSub.html"
   },
-  "icons": { "16": "icon.png",
-           "48": "icon.png",
-          "128": "icon.png" },
-  "web_accessible_resources": [
-    "images/settings.svg",
-    "images/upload.svg",
-    "icon.png"
+  "icons": [
+    {"src": "icon.png", "sizes": "16x16", "type": "image/png"},
+    {"src": "icon.png", "sizes": "48x48", "type": "image/png"},
+    {"src": "icon.png", "sizes": "128x128", "type": "image/png"}
   ],
-  "background": {
-    "scripts": ["onlineSubBackground.js"]
+  "web_accessible_resources": [
+    {
+      "resources": [
+        {"file": "images/settings.svg", "mime_type": "image/svg+xml"},
+        {"file": "images/upload.svg", "mime_type": "image/svg+xml"},
+        {"file": "icon.png", "mime_type": "image/png"}
+      ],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ],
+  "service_worker": {
+    "script": "onlineSubBackground.js"
   },
   "content_scripts": [
-        {
-        "matches": [
-            "http://*/*",
-            "https://*/*"
-            ],
-        "all_frames": true,
-        "js": ["onlineSubcontent.js"],
-        "css":["onlineSub.css"],
-        "run_at": "document_end" 
-        }
-    ], 
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "all_frames": true,
+      "js": ["onlineSubcontent.js"],
+      "css": ["onlineSub.css"],
+      "run_at": "document_end"
+    }
+  ],
   "permissions": [
-   "activeTab",
+    "activeTab",
     "tabs",
     "storage",
     "http://*/*",
     "https://*/*",
     "<all_urls>"
-   ]
+  ]
 }
