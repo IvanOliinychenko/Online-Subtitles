@@ -17,7 +17,7 @@ chrome.tabs.query({'active': true}, function (tabs) {
   tabUrl = extractDomain(tabs[0].url);
 });
 
-chrome.storage.sync.get('onlineSub', function(val) {
+chrome.storage.sync.get('onlineSub').then(function(val) {
   if(val.onlineSub === undefined){
     onoffOnlineSub.checked = true;
   }else{
@@ -25,7 +25,7 @@ chrome.storage.sync.get('onlineSub', function(val) {
   }
 });
 
-chrome.storage.sync.get('onlineSubOnPage', function(val) {
+chrome.storage.sync.get('onlineSubOnPage').then(function(val) {
  onoffOnlineSubOnPage.checked = true;
   if(val.onlineSubOnPage !== undefined){
     for(var i=0;i<val.onlineSubOnPage.length;i++){
@@ -42,14 +42,14 @@ onoffOnlineSub.addEventListener('click', onoffOnlineSubFunc, false);
 function onoffOnlineSubOnPageFunc(){
   
   if(this.checked){
-       chrome.storage.sync.get('onlineSubOnPage', function(val) {
+    chrome.storage.sync.get('onlineSubOnPage').then(function(val) {
       var onlineSubOnPage;
       if(val.onlineSubOnPage !== undefined){
         onlineSubOnPage = val.onlineSubOnPage.indexOf(tabUrl)
         if(onlineSubOnPage !== undefined){
           val.onlineSubOnPage.splice(onlineSubOnPage, 1)
           onlineSubOnPage = val.onlineSubOnPage;
-          chrome.storage.sync.set({'onlineSubOnPage': onlineSubOnPage}, function(){
+          chrome.storage.sync.set({'onlineSubOnPage': onlineSubOnPage}).then(function(){
             onoffOnlineSubOnPage.checked = true;
             onlineSubOnOnDomen();
           });
@@ -57,7 +57,7 @@ function onoffOnlineSubOnPageFunc(){
       }
     });
   }else{
-    chrome.storage.sync.get('onlineSubOnPage', function(val) {
+    chrome.storage.sync.get('onlineSubOnPage').then(function(val) {
       var onlineSubOnPage = [];
       
       if(val.onlineSubOnPage === undefined){
@@ -65,23 +65,21 @@ function onoffOnlineSubOnPageFunc(){
       }else{
         onlineSubOnPage = val.onlineSubOnPage.concat(tabUrl);
       }
-      chrome.storage.sync.set({'onlineSubOnPage': onlineSubOnPage}, function(){
+      chrome.storage.sync.set({'onlineSubOnPage': onlineSubOnPage}).then(function(){
         onoffOnlineSubOnPage.checked = false;
         onlineSubOffOnDomen();
-
       });
-      
     }); 
   }
 }
 function onoffOnlineSubFunc(){
   if(this.checked){
-    chrome.storage.sync.set({'onlineSub': true}, function(){
+    chrome.storage.sync.set({'onlineSub': true}).then(function(){
       onlineSubOn();
       onoffOnlineSub.checked = true;
     });  
   }else{
-    chrome.storage.sync.set({'onlineSub': false}, function(){
+    chrome.storage.sync.set({'onlineSub': false}).then(function(){
       onlineSubOff();
       onoffOnlineSub.checked = false;
     });    

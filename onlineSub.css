@@ -23,10 +23,19 @@
   -webkit-text-stroke-width: 0.02em; 
   z-index:999999;
   line-height: 1em;
+  display: table;
 }
 
+.onlineSubWrap span{
+  display: inline-block;
+  padding: 0 2px;
+  line-height: 1em;
+}
+
+
 .onlineSubDashboard{
-  font-size: 18px;
+  font-size: 14px;
+  line-height: 16px;
   font-family:"Courier New", Courier, monospace;
   position: absolute;
   top:0;
@@ -37,6 +46,13 @@
   background: rgba(0,0,0,0.4);
   text-shadow: 2px 2px 2px #000;
   color: #fff;
+  user-select: none;
+  text-align: left;
+}
+
+.onlineSubDashboard input, .onlineSubDashboard select{
+  cursor: pointer;
+  vertical-align: middle;
 }
 
 .onlineSubDashboard select{
@@ -68,6 +84,11 @@
   padding: 5px;
   cursor:pointer;
 }
+.onlineSubSettingsWrap{
+  clear: both;
+  padding: 5px;
+}
+
 .onlineSubSettings:hover{
   background-color:black;
 }
@@ -93,23 +114,6 @@
   background-color:black;
 }
 
-.onlineSubCorOutput {
+.onlineSubCorOutput{
   color:black;
 }
-
-.onlineSubSaveAsGlobal {
-  background-color: rgba(0,0,0,.7);
-  border: 1px solid white;
-  margin: 10px;
-}
-
-.onlineSubCorOutput {
-  color:black;
-}
- 
-.onlineSubSaveAsGlobal {
-  background-color: rgba(0,0,0,.7);
-  border: 1px solid white;
-  margin: 10px;
-}
-    

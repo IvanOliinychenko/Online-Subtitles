@@ -1,39 +1,23 @@
-chrome.storage.sync.get('onlineSub', function(val) {
+chrome.storage.sync.get('onlineSub').then(function(val){
   if(val.onlineSub === undefined){
-    
-    chrome.storage.sync.set({'onlineSub': true}, function() {
-      injectOnlineSub();
-      onlineSubOffOn('onlineSubOn');
-
-    })
+    chrome.storage.sync.set({'onlineSub': true});
   }
 });
 
-function injectOnlineSub(){
-  chrome.windows.getAll({populate:true},function(windows){
-    windows.forEach(function(window){
-      window.tabs.forEach(function(tab){
-        if(tab.url.slice(0,6) !== 'chrome')
-          chrome.tabs.executeScript(tab.id, {file: "onlineSubcontent.js"});
-      });
-    });
-  });
-}
-
 chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
-   if(message.onlineSubOffOn  === 'onlineSubOff'){
-     onlineSubOffOn('onlineSubOff')
-   }else if(message.onlineSubOffOn === 'onlineSubOn'){
-     onlineSubOffOn('onlineSubOn') 
-   }else if(message.onlineSubOnOnDomen === 'onlineSubOn'){
-     onlineSubOffOnDomen('onlineSubOn')
-   }else if(message.onlineSubOffOnDomen === 'onlineSubOff'){
-     onlineSubOffOnDomen('onlineSubOff')
-   }else if(message.changeGlobalSettings !== undefined){
-     changeGlobalSettings(message.changeGlobalSettings,sender.tab.id)
-   }else{
-     console.log('onlineSub backgroundscript message error')
-   }
+  if(message.onlineSubOffOn  === 'onlineSubOff'){
+    onlineSubOffOn('onlineSubOff')
+  }else if(message.onlineSubOffOn === 'onlineSubOn'){
+    onlineSubOffOn('onlineSubOn') 
+  }else if(message.onlineSubOnOnDomen === 'onlineSubOn'){
+    onlineSubOffOnDomen('onlineSubOn')
+  }else if(message.onlineSubOffOnDomen === 'onlineSubOff'){
+    onlineSubOffOnDomen('onlineSubOff')
+  }else if(message.changeGlobalSettings !== undefined){
+    changeGlobalSettings(message.changeGlobalSettings,sender.tab.id)
+  }else{
+    console.log('onlineSub backgroundscript message error')
+  }
 });
 
 function changeGlobalSettings(val,sender){
@@ -56,6 +40,7 @@ function onlineSubOffOn(val){
     });
   });
 }
+
 function extractDomain(url) {
     var domain;
     if (url.indexOf("://") > -1) {
@@ -67,6 +52,7 @@ function extractDomain(url) {
     domain = domain.split(':')[0];
     return domain;
 }
+
 function onlineSubOffOnDomen(val){
   var curTabUrl;
   chrome.tabs.query({'active': true}, function (tabs) {
@@ -78,5 +64,4 @@ function onlineSubOffOnDomen(val){
         chrome.tabs.sendMessage(tabs[i].id, {'onlineSub': val });
    }
   });
- 
 }

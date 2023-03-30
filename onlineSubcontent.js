@@ -22,12 +22,13 @@ function findVideoTags(status){
     clearTimeout(showTimeoutMM);
     clearTimeout(showTimeoutOW);
    for(var i=0;i<allVideos.length;i++){
-    allVideos[i].removeEventListener('playing');
-    allVideos[i].removeEventListener('pause');
-    allVideos[i].removeEventListener('mousemove');
-    allVideos[i].removeEventListener('timeupdate');
-    allVideos = [];
+    allVideos[i].parsedSrt = undefined;
+    allVideos[i].removeEventListener('playing',hideOnlineSubSettings,false);
+    allVideos[i].removeEventListener('pause',showOnlineSubSettings,false);
+    allVideos[i].removeEventListener('mousemove',showOnlineSubSettingsMM,false);
+    allVideos[i].removeEventListener('timeupdate',timeUpdateEvent,false);
    }
+   allVideos = [];
   }
 }
 
@@ -56,25 +57,98 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
  
   var encodings = ['UTF-8','IBM866','ISO-8859-2','ISO-8859-3','ISO-8859-4','ISO-8859-5','ISO-8859-6','ISO-8859-7','ISO-8859-8','ISO-8859-8-I','ISO-8859-10','ISO-8859-13','ISO-8859-14','ISO-8859-15','ISO-8859-16','KOI8-R','KOI8-U','macintosh','windows-874','windows-1250','windows-1251','windows-1252','windows-1253','windows-1254','windows-1255','windows-1256','windows-1257','windows-1258','x-mac-cyrillic','GBK','gb18030','Big5','EUC-JP','ISO-2022-JP','Shift_JIS','EUC-KR','UTF-16BE','UTF-16LE'];
 
-  var onlineSubDashboard = "<div class='onlineSubWrap'></div><div class='onlineSubDashboard'>"+
-    "<input type='file' id='onlineSubLoadBtn"+onlineSubLoadBtnID+"' accept='.srt' class='onlineSubLoadBtn'>"+
-    "<label class='onlineSubLoadLabel' for='onlineSubLoadBtn"+onlineSubLoadBtnID+"'><div></div></label><div class='onlineSubSettings' show='false'></div><br style='line-height: 30px;'>"+
-    "<span>Adjust position: </span><input class='onlineSubRange' type='range' min='-1400' max='700' step='10' value='0'><br>"+
-    "<span>Color: </span><input class='onlineSubColor' type='color' value='#ffff00'><span> Bold: </span><input class='onlineSubBold' type='checkbox'><br>"+
-    "<span>Stroke: </span><input class='onlineSubStrokeColor' type='color' value='#000000'><br>"+
-    "<span>Background color: </span><input class='onlineSubWrapLine' type='color' value='#000000'><br>"+
-    "<span>Background opacity: </span><input class='onlineSubWrapLineOpacity' type='range' min='1' max='100' step='1' value='0'><br>"+
-    "<span>Time corection (ms): </span><input class='onlineSubCorOutput' type='number' step='500' value='-1000'><br>"+
-    "<span>Size: </span><input class='onlineSubFontSize' type='range' value='32' min='12' max='96' step='1'><br>"+
-    "<span>Font family: </span><select class='onlineSubFontFamily'></select><br>"+
-    "<span>Encoding: </span><select class='onlineSubEncoding'></select><br>"+
-    "<span>Save global: </span><input type='button' value='save' class='onlineSubSaveAsGlobal'>"+
-  "</div>";
+  var onlineSubDashboard = `
+  <div class="onlineSubWrap"></div>
+  <div class="onlineSubDashboard">
+    <input type="file" id="onlineSubLoadBtnonlineSubLoadBtnID" accept=".srt" class="onlineSubLoadBtn" />
+    <label class="onlineSubLoadLabel" for="onlineSubLoadBtnonlineSubLoadBtnID">
+      <div></div>
+    </label>
+    <div class="onlineSubSettings" show="false"></div>
+    <div class="onlineSubSettingsWrap">
+      <div>
+        <span>Adjust position: </span>
+        <input class="onlineSubRange" type="range" min="-1400" max="700" step="10" value="0" />
+      </div>
+      
+      <div>
+        <span>Color: </span>
+        <input class="onlineSubColor" type="color" value="#ffff00" />
+      </div>
+
+      <div>
+        <span>Bold: </span>
+        <input class="onlineSubBold" type="checkbox" />
+      </div>
+
+      <div>
+        <span>Stroke: </span>
+        <input class="onlineSubStrokeColor" type="color" value="#000000" />
+      </div>
+      
+      <div>
+        <span>Background color: </span>
+        <input class="onlineSubWrapLine" type="color" value="#000000">
+      </div>
+
+      <div>
+        <span>Background opacity: </span>
+        <input class="onlineSubWrapLineOpacity" type="range" min="1" max="100" step="1" value="0" />
+      </div>
+      
+      <div>
+        <span>Time corection (ms): </span>
+        <input class="onlineSubCorOutput" type="number" step="500" value="-1000" />
+      </div>
+      
+      <div>
+        <span>Size: </span>
+        <input class="onlineSubFontSize" type="range" value="32" min="12" max="96" step="1" />
+      </div>
+      
+      <div>
+        <span>Font family: </span>
+        <select class="onlineSubFontFamily"></select>
+      </div>
+      
+      <div>
+        <span>Encoding: </span>
+        <select class="onlineSubEncoding"></select>
+      </div>
+      
+      <div>
+        <span>Save globally: </span>
+        <input type="button" value="save" class="onlineSubSaveAsGlobal" />
+      </div>
+    </div>
+  </div>
+  `;
+  
+  // "<div class='onlineSubWrap'></div><div class='onlineSubDashboard'>"+
+  //   "<input type='file' id='onlineSubLoadBtn"+onlineSubLoadBtnID+"' accept='.srt' class='onlineSubLoadBtn'>"+
+  //   "<label class='onlineSubLoadLabel' for='onlineSubLoadBtn"+onlineSubLoadBtnID+"'><div></div></label><div class='onlineSubSettings' show='false'></div><br style='line-height: 30px;clear: both;'>"+
+  //   "<span>Adjust position: </span><input class='onlineSubRange' type='range' min='-1400' max='700' step='10' value='0'><br>"+
+  //   "<span>Color: </span><input class='onlineSubColor' type='color' value='#ffff00'><span> Bold: </span><input class='onlineSubBold' type='checkbox'><br>"+
+  //   "<span>Stroke: </span><input class='onlineSubStrokeColor' type='color' value='#000000'><br>"+
+  //   "<span>Background color: </span><input class='onlineSubWrapLine' type='color' value='#000000'><br>"+
+  //   "<span>Background opacity: </span><input class='onlineSubWrapLineOpacity' type='range' min='1' max='100' step='1' value='0'><br>"+
+  //   "<span>Time corection (ms): </span><input class='onlineSubCorOutput' type='number' step='500' value='-1000'><br>"+
+  //   "<span>Size: </span><input class='onlineSubFontSize' type='range' value='32' min='12' max='96' step='1'><br>"+
+  //   "<span>Font family: </span><select class='onlineSubFontFamily'></select><br>"+
+  //   "<span>Encoding: </span><select class='onlineSubEncoding'></select><br>"+
+  //   "<span>Save global: </span><input type='button' value='save' class='onlineSubSaveAsGlobal'>"+
+  // "</div>";
+
+
   video.insertAdjacentHTML('afterend', onlineSubDashboard);
  // var img = video.parentElement.getElementsByClassName('onlineSubLoadLabel')[0].children[0];
  // img.src = chrome.extension.getURL("uploadIcon.svg");
 
-
+  if(!video.parentElement.style.position)
+  {
+      video.parentElement.style.position = 'relative';
+  }
+ 
   var onlineSubWrap = video.parentElement.getElementsByClassName('onlineSubWrap')[0];
   var onlineSubWrapLine = video.parentElement.getElementsByClassName('onlineSubWrapLine')[0]
   var onlineSubLoadBtn = video.parentElement.getElementsByClassName('onlineSubLoadBtn')[0];
@@ -90,8 +164,6 @@ function addOnlineSubLoadBtn(video,onlineSubLoadBtnID){
   var onlineSubSaveAsGlobal = video.parentElement.getElementsByClassName('onlineSubSaveAsGlobal')[0];
   var onlineSubBold = video.parentElement.getElementsByClassName('onlineSubBold')[0];
   
-  
-
   setUpEncodings(onlineSubEncoding, encodings);
   setUpStyles(onlineSubDashboard, onlineSubFonts, onlineSubFontFamily, onlineSubWrap);
   setUpWrapPos(video, onlineSubWrap, onlineSubRange);
@@ -119,7 +191,7 @@ function changeSubEncoding(evt){
 	handleFileSelect(evt);
 }
 function changeSubWeight(evt){
-  var onlineSubDashboard = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var onlineSubDashboard = getClosestOnlineSubDashboard(evt.target).parentElement.getElementsByClassName('onlineSubWrap')[0];
 
   if(evt.target.checked){
        onlineSubDashboard.style.fontWeight = 'bold';
@@ -130,7 +202,7 @@ function changeSubWeight(evt){
 function saveStylesAsGlobal(evt){
   var onlineSubDashboard;
   if(evt.target !== undefined){
-    onlineSubDashboard = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubDashboard')[0];
+    onlineSubDashboard = getClosestOnlineSubDashboard(evt.target);
   }else{
     onlineSubDashboard = evt;
   }
@@ -150,7 +222,7 @@ function saveStylesAsGlobal(evt){
 }
 
 function getStylesFromStorage(onlineSubDashboard){
-  chrome.storage.sync.get('onlineSubSettings', function(val){
+  chrome.storage.sync.get('onlineSubSettings').then(function(val){
     var inputs = onlineSubDashboard.querySelectorAll("input[type='range'],input[type='checkbox'],input[type='color'],input[type='number'],select");
     if(val.onlineSubSettings !== undefined){
       for(var i=0;i<inputs.length;i++){
@@ -175,7 +247,7 @@ function getStylesFromStorage(onlineSubDashboard){
   });
 }
 function saveStylesToStorage(val){
-  chrome.storage.sync.set({'onlineSubSettings': val}, function(){
+  chrome.storage.sync.set({'onlineSubSettings': val}).then(function(){
     chrome.runtime.sendMessage({'changeGlobalSettings': val});
   });
 }
@@ -208,7 +280,6 @@ function setUpEncodings(onlineSubEncoding, encodings){
 		onlineSubEncoding.options[onlineSubEncoding.options.length] = new Option(encodings[i], encodings[i]);
 	}
 };
-
 
 var setUpWrapPosTimer = null;
 function setUpWrapPos(video, onlineSubWrap, onlineSubRange){
@@ -289,36 +360,43 @@ function showOnlineSubSettings(evt){
     }, 1100)
 }
 function changeSubFontFamily(evt){
-  var onlineSubWrap = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var onlineSubWrap = getClosestOnlineSubDashboard(evt.target).parentElement.getElementsByClassName('onlineSubWrap')[0];
   onlineSubWrap.style.fontFamily = evt.target.value;
 }
 function changeFontSize(evt){
-  var onlineSubWrap = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var onlineSubWrap = getClosestOnlineSubDashboard(evt.target).parentElement.getElementsByClassName('onlineSubWrap')[0];
   onlineSubWrap.style.fontSize = evt.target.value+'px';
 }
-function changeSubWrapLine(evt){
-  if(evt.target.parentElement.getElementsByClassName('style').length > 0)
-    evt.target.parentElement.removeChild(evt.target.parentElement.getElementsByClassName('style')[0]);
 
-   var onlineSubWrapLine =  evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0].getElementsByTagName('span');
-   var onlineSubWrapLineOpacity = parseInt(evt.target.parentElement.getElementsByClassName('onlineSubWrapLineOpacity')[0].value);
+function getClosestOnlineSubDashboard(el)
+{
+  return el.closest('.onlineSubDashboard');
+}
+
+function changeSubWrapLine(evt){
+  var closestOnlineSubDashboard = getClosestOnlineSubDashboard(evt.target);
+  
+  if(closestOnlineSubDashboard.getElementsByTagName('style').length > 0)
+    closestOnlineSubDashboard.removeChild(closestOnlineSubDashboard.getElementsByTagName('style')[0]);
+
+   var onlineSubWrapLineOpacity = parseInt(closestOnlineSubDashboard.getElementsByClassName('onlineSubWrapLineOpacity')[0].value);
    var css = document.createElement("style");
    css.type = "text/css";
    css.innerHTML = ".onlineSubWrap span{background-color: "+ convertHex(evt.target.value , onlineSubWrapLineOpacity)+";}";
-   evt.target.parentElement.appendChild(css);
+   closestOnlineSubDashboard.appendChild(css);
    
 }
 function changeSubOpacity(evt){
-  if(evt.target.parentElement.getElementsByClassName('style').length > 0)
-    evt.target.parentElement.removeChild(evt.target.parentElement.getElementsByTagName('style')[0]);
+  var closestOnlineSubDashboard = getClosestOnlineSubDashboard(evt.target);
+  
+  if(closestOnlineSubDashboard.getElementsByTagName('style').length > 0)
+  closestOnlineSubDashboard.removeChild(closestOnlineSubDashboard.getElementsByTagName('style')[0]);
 
-   var onlineSubWrapLine =  evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0].getElementsByTagName('span');
-   var onlineSubWrapLine = evt.target.parentElement.getElementsByClassName('onlineSubWrapLine')[0].value;
+   var onlineSubWrapLine = closestOnlineSubDashboard.getElementsByClassName('onlineSubWrapLine')[0].value;
    var css = document.createElement("style");
    css.type = "text/css";
    css.innerHTML = ".onlineSubWrap span{background-color: "+ convertHex(onlineSubWrapLine , evt.target.value)+";}";
-   evt.target.parentElement.appendChild(css);
-   
+   closestOnlineSubDashboard.appendChild(css);
 }
 function convertHex(hex,opacity){
   hex = hex.replace('#','');
@@ -330,18 +408,18 @@ function convertHex(hex,opacity){
   return result;
 }
 function changeSubColor(evt){
-  var onlineSubWrap = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var onlineSubWrap = getClosestOnlineSubDashboard(evt.target).parentElement.getElementsByClassName('onlineSubWrap')[0];
   onlineSubWrap.style.webkitTextFillColor = evt.target.value;
 }
 function changeSubStrokeColor(evt){
-  var onlineSubWrap = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var onlineSubWrap = getClosestOnlineSubDashboard(evt.target).parentElement.getElementsByClassName('onlineSubWrap')[0];
   onlineSubWrap.style.webkitTextStrokeColor = evt.target.value;
 }
 function handleFileSelect(evt) {
-  var loadSubBtn = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubDashboard')[0].getElementsByClassName('onlineSubLoadBtn')[0];
-  var video = evt.target.parentElement.parentElement.getElementsByTagName('video')[0];
-  var subWrap = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubWrap')[0];
-  var selectedEncoding = evt.target.parentElement.parentElement.getElementsByClassName('onlineSubDashboard')[0].getElementsByClassName('onlineSubEncoding')[0];
+  var closestOnlineSubDashboard = getClosestOnlineSubDashboard(evt.target);
+  var loadSubBtn = closestOnlineSubDashboard.getElementsByClassName('onlineSubLoadBtn')[0];
+  var video = closestOnlineSubDashboard.parentElement.getElementsByTagName('video')[0];
+  var selectedEncoding = closestOnlineSubDashboard.getElementsByClassName('onlineSubEncoding')[0];
   if (loadSubBtn.files && loadSubBtn.files[0]) {
     var file = loadSubBtn.files[0];
 
@@ -350,13 +428,16 @@ function handleFileSelect(evt) {
         return function(e) {
           var parseError = false;
         try{
-          var parsedSrt = parseSrt(e.target.result); // parsed srt
+          video.parsedSrt = parseSrt(e.target.result)
         }catch(e){
           alert("reading the file error");
           parseError = true;
         }
         if(!parseError)
-          startVideoListner(video,subWrap,loadSubBtn,parsedSrt); //send to background
+        {
+          video.addEventListener('timeupdate',timeUpdateEvent,false);
+        }
+          
         };
       })(file);
    reader.readAsText(file, selectedEncoding.value);
@@ -403,19 +484,20 @@ function getVideoCurTime(video){
   return getMs[0] * 1000 + parseInt(getMs[1].slice(0,3))
 }
 
-function startVideoListner(video,subWrap,loadSubBtn,parsedSrt){
-  video.addEventListener('timeupdate',function(){
-     var curVidTime = getVideoCurTime(video); //current video time
-     curSubText = sybSynch(video,curVidTime,parsedSrt); //sub synchronizing
-     curSubText = curSubText.split('\n');
-     var preperedSubText = '';
-     for(var i=0;i<curSubText.length;i++){
-       preperedSubText += '<span>'+curSubText[i]+'</span><br>'
-     }
-     subWrap.innerHTML = preperedSubText;
-  },false);
-}
+function timeUpdateEvent(evt){
+  var video = evt.target;
+  var subWrap = evt.target.parentElement.getElementsByClassName('onlineSubWrap')[0];
+  var parsedSrt = evt.target.parsedSrt;
 
+  var curVidTime = getVideoCurTime(video); //current video time
+  curSubText = sybSynch(video,curVidTime,parsedSrt); //sub synchronizing
+  curSubText = curSubText.split('\n');
+  var preperedSubText = '';
+  for(var i=0;i<curSubText.length;i++){
+    preperedSubText += '<span>'+curSubText[i]+'</span><br>'
+  }
+  subWrap.innerHTML = preperedSubText;
+}
 
 function sybSynch(video, curVidTime,parsedSrt){
   var onlineSubCorOutput = parseInt(video.parentElement.getElementsByClassName('onlineSubCorOutput')[0].value);
@@ -437,18 +519,18 @@ function sybSynch(video, curVidTime,parsedSrt){
 function checkIfNotBannedGlobal(){
   var switchOnGlobal = true;
   var switchOnOnsite = true;
-  chrome.storage.sync.get('onlineSub', function(val1) {
+  chrome.storage.sync.get('onlineSub').then(function(val1) {
     if(val1.onlineSub !== undefined){
       var tabUrl = extractDomain(window.location.href);
       switchOnGlobal = val1.onlineSub;
-      chrome.storage.sync.get('onlineSubOnPage', function(val2){
+      chrome.storage.sync.get('onlineSubOnPage').then(function(val2){
         if(val2.onlineSubOnPage !== undefined){
         for(var i=0;i<val2.onlineSubOnPage.length;i++){
           if(val2.onlineSubOnPage[i] === tabUrl)
             switchOnOnsite = false;
         }  
       }
-      if(switchOnGlobal && switchOnOnsite){
+      if(switchOnGlobal || switchOnOnsite){
         findVideoTags(true);
       }else{
         findVideoTags(false);
@@ -505,14 +587,7 @@ function setStylesFromGlobal(val){
     }
 }
 function removeOnlineSub(){
-  var allSubWrap = document.getElementsByClassName('onlineSubWrap');
-  var allSubDashboard = document.getElementsByClassName('onlineSubDashboard');
-  for(var i=0;i<allSubWrap.length;i++){
-    allSubWrap[i].remove()
-  }
-  for(var i=0;i<allSubDashboard.length;i++){
-    allSubDashboard[i].remove()
-  } 
+  document.querySelectorAll('.onlineSubWrap, .onlineSubDashboard').forEach(el => el.remove());
 }
 
 
@@ -545,10 +620,10 @@ function setupShortcuts() {
           return;
         }
 
-        if (e.keyCode === 'g'.charCodeAt() || e.keyCode === 'G'.charCodeAt()) {
+        if (e.key === 'g' || e.key === 'G') {
             subtitleToTime(miliseconds, 'delay');
         }
-        if (e.keyCode === 'h'.charCodeAt() || e.keyCode === 'H'.charCodeAt()) {
+        if (e.key === 'h' || e.key === 'H') {
             subtitleToTime(miliseconds, 'speed');
         }
     });
