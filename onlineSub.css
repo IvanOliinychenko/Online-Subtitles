@@ -1,6 +1,5 @@
-.onoffswitch-checkbox{
-    background-image: url('chrome-extension://__MSG_@@extension_id__/images/settings.svg');
-  /*padding: 0 10px 0 10px; */
+.onoffswitch-checkbox {
+  background-image: url('chrome-extension://__MSG_@@extension_id__/images/settings.svg');
   width: 18px;
   height: 18px;
   background-repeat: no-repeat;
@@ -8,112 +7,115 @@
   background-size: 18px;
 }
 
-.onlineSubWrap{
+.onlineSubWrap {
   position: absolute;
-  top:0;
-  left:0;
-  bottom: 0;
-  right: 0; 
   text-align: center;
-  margin:auto;
-  /*color:yellow;*/
-  pointer-events: none;
- /* -webkit-text-fill-color: yellow;
-  -webkit-text-stroke-color: black;*/
-  -webkit-text-stroke-width: 0.02em; 
-  z-index:999999;
+  -webkit-text-stroke-width: 0.02em;
+  z-index: 999999;
   line-height: 1em;
-  display: table;
+  cursor: move;
+  min-width: 150px;
+  min-height: 16px;
+  height: max-content;
+  width: max-content;
+  margin: auto;
 }
 
-.onlineSubWrap span{
+.onlineSubWrap span {
   display: inline-block;
   padding: 0 2px;
-  line-height: 1em;
 }
 
-
-.onlineSubDashboard{
+.onlineSubDashboard {
   font-size: 14px;
   line-height: 16px;
-  font-family:"Courier New", Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   position: absolute;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
   transition: 2s ease;
   opacity: 1;
-  z-index:999999;
-  background: rgba(0,0,0,0.4);
+  z-index: 999999;
+  background: rgba(0, 0, 0, 0.4);
   text-shadow: 2px 2px 2px #000;
   color: #fff;
   user-select: none;
   text-align: left;
 }
 
-.onlineSubDashboard input, .onlineSubDashboard select{
+.onlineSubDashboard input,
+.onlineSubDashboard select {
   cursor: pointer;
   vertical-align: middle;
 }
 
-.onlineSubDashboard select{
+.onlineSubDashboard select {
   width: 100px
 }
+
 .onlineSubDashboard select:focus {
-    overflow: hidden;
-    position: relative;
-    white-space:nowrap;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
 }
-.onlineSubDashboard input[type='color']{
+
+.onlineSubDashboard input[type='color'] {
   width: 50px;
 }
-.onlineSubDashboard input{
+
+.onlineSubDashboard input {
   width: 100px;
 }
-.onlineSubDashboard input[type='checkbox']{
+
+.onlineSubDashboard input[type='checkbox'] {
   width: auto;
 }
-.onlineSubSettings{
+
+.onlineSubSettings {
   float: right;
   background-image: url('chrome-extension://__MSG_@@extension_id__/images/settings.svg');
-  /*padding: 0 10px 0 10px; */
   width: 18px;
   height: 18px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 18px;
   padding: 5px;
-  cursor:pointer;
+  cursor: pointer;
 }
-.onlineSubSettingsWrap{
+
+.onlineSubSettingsWrap {
   clear: both;
   padding: 5px;
 }
 
-.onlineSubSettings:hover{
-  background-color:black;
+.onlineSubSettings:hover {
+  background-color: black;
 }
 
-.onlineSubDashboard input[type='file']{
-   display: none;
+.onlineSubDashboard input[type='file'] {
+  display: none;
 }
-.onlineSubLoadLabel{
-  cursor:pointer;
-  float:left;
+
+.onlineSubLoadLabel {
+  cursor: pointer;
+  float: left;
 }
-.onlineSubLoadLabel div{
+
+.onlineSubLoadLabel div {
   background-image: url('chrome-extension://__MSG_@@extension_id__/images/upload.svg');
   width: 18px;
   height: 18px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: 18px;
-  display:block;
+  display: block;
   padding: 5px;
 }
-.onlineSubLoadLabel div:hover{
-  background-color:black;
+
+.onlineSubLoadLabel div:hover {
+  background-color: black;
 }
 
-.onlineSubCorOutput{
-  color:black;
+.onlineSubCorOutput {
+  color: black;
 }
